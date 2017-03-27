@@ -1,40 +1,59 @@
-$(document).ready(function() {
-    // sections includes all of the container divs that relate to menu items.
-    var sections = $('.content');
+(function() {
 
     // Smooth scrolling of page
-    (function() {
-        $("#sidebar a").on("click", function(e) {
-            // fetch element to scroll
-            var elem = $("#"+this.href.split('#')[1]);
-            $("body, html").animate({
-                scrollTop: elem.offset().top
-            }, 400);
-            e.preventDefault();
-        });
-    })();
+    function scrollTo(element, to, duration) {
+        if (duration <= 0) return;
+        var difference, perTick;
+        difference = to - element.scrollTop;
+        perTick = difference / duration * 10;
+
+        setTimeout(function() {
+            element.scrollTop = element.scrollTop + perTick;
+            if (element.scrollTop === to) return;
+            scrollTo(element, to, duration - 10);
+        }, 10);
+    }
+
+    document.addEventListener("click", function(event) {
+        if (event.target.nodeName === 'A') {
+            var elem, targetElement;
+            elem = event.target;
+            targetElement = document.getElementById(elem.href.split('#')[1]);
+            event.preventDefault();
+            scrollTo(document.body, targetElement.offsetTop, 250);
+        }
+    });
+
 
     // Highlight links over scrolling
-    $(window).scroll(function() {
-        var currentScroll, currentSec, currentSecId, divPosition;
+    var sections = document.getElementsByClassName('content');
+    window.addEventListener('scroll', function(e) {
+        var currentScroll, currentSec, currentSecId, divPosition, tagElm, abc;
         // currentScroll is the number of pixels the window has been scrolled
-        currentScroll = $(this).scrollTop();
+        currentScroll = document.body.scrollTop;
         
         // We check the position of each of the divs compared to the windows scroll positon
-        sections.each(function() {
+        for (var i = 0; i < sections.length; i++) {
             // divPosition is the position down the page in px of the current section we are testing      
-            divPosition = $(this).offset().top;
+            divPosition = sections[i].offsetTop;
 
             // If the divPosition is less the the currentScroll position the div we are testing has moved above the window edge.
             // the -1 is so that it includes the div 1px before the div leave the top of the window.
             if (divPosition - 1 < currentScroll) {
                 // We have either read the section or are currently reading the section so we'll call it our current section
-                currentSec = $(this);
+                currentSec = sections[i];
                 // This is the bit of code that uses the currentSec as its source of ID
-                currentSecId = currentSec.attr('id');
-                $('a').removeClass('active');
-                $('[href=\\#'+currentSecId+']').addClass('active');
+                currentSecId = currentSec.id;
+                tagElm = document.querySelectorAll('a');
+                for (var j = 0; j < tagElm.length; j++) {
+                    if (tagElm[j].className === 'active') {
+                        tagElm[j].className = '';
+                        break;
+                    }
+                }
+                abc = document.querySelector('[href="#'+currentSecId+'"]');
+                abc.classList = 'active';
             }
-        })
-    });
-});
+        }
+    })
+})();
