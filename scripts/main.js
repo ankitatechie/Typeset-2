@@ -28,7 +28,7 @@
     // Highlight links over scrolling
     var sections = document.getElementsByClassName('content');
     window.addEventListener('scroll', function(e) {
-        var currentScroll, currentSec, currentSecId, divPosition, tagElm, abc;
+        var currentScroll, currentSec, currentSecId, divPosition, tagElm, activeLink;
         // currentScroll is the number of pixels the window has been scrolled
         currentScroll = document.body.scrollTop;
         
@@ -51,8 +51,8 @@
                         break;
                     }
                 }
-                abc = document.querySelector('[href="#'+currentSecId+'"]');
-                abc.classList = 'active';
+                activeLink = document.querySelector('[href="#'+currentSecId+'"]');
+                activeLink.classList = 'active';
             }
         }
     })
